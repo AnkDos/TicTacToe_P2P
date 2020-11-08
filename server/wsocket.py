@@ -27,28 +27,24 @@ class PlayGame:
         """"""
         del self.game_info[game_id]
         
+        
 obj = PlayGame()
 
 def player(payload,payload_str,ws):
     """"""
     if payload['type'] == 'create':
         obj.create_game(payload['game_id'], ws)
-
     if payload['type'] == 'join':
         if payload['game_id'] not in obj.game_info:
             return {
                 ws : "400"
-            } 
-        
+            }         
         obj.join_game(payload['game_id'], ws)
-
     if payload['type'] ==  'play':
         obj.play(payload['game_id'],payload_str,ws)
-        
     ret_ = {}
     for values in obj.game_info[payload['game_id']]['ws'] :
         ret_[values] = obj.game_info[payload['game_id']]['payload']
-    
     print(obj.game_info)
     return ret_
 
@@ -62,7 +58,7 @@ async def play_online(websocket, path):
             await key.send(value)
             await asyncio.sleep(0.00003)
 
-
-start_server = websockets.serve(play_online, "0.0.0.0", 1234)
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+if __name__ == "__main__":
+    start_server = websockets.serve(play_online, "0.0.0.0", 1234)
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_forever()
