@@ -45,14 +45,13 @@ def player(payload,payload_str,ws):
     ret_ = {}
     for values in obj.game_info[payload['game_id']]['ws'] :
         ret_[values] = obj.game_info[payload['game_id']]['payload']
-    print(obj.game_info)
+    
     return ret_
 
 async def play_online(websocket, path):
     while True:
         payload_str = await websocket.recv()
         payload = json.loads(payload_str)
-        print(payload)
         data = player(payload,payload_str,websocket)        
         for key, value  in data.items():
             await key.send(value)
