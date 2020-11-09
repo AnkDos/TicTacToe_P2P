@@ -4,7 +4,7 @@ grid[0] = new Array(3);
 grid[1] = new Array(3);
 grid[2] = new Array(3);
 console.log("init_grid ", grid)
-var player = 1;
+var player = undefined;
 var gameWon = 0;
 var websocket = new WebSocket("ws://0.0.0.0:1234/");
 
@@ -73,9 +73,9 @@ websocket.onmessage = function (event) {
 $("#square_one").click(function () {
     console.log("clicked");
     if (checkLegalMove(0, 0) == true) {
-        
         game_id = document.getElementById('game_id').value
         winner = null
+        make_call = false;
         if (player == 1) {
             $("#square_one_text").html("X");
             grid[0][0] = 'X';
@@ -84,8 +84,9 @@ $("#square_one").click(function () {
                 winner = 1;
             }
             player = 2;
+            make_call = true ;
 
-        } else {
+        } else if(player==2)  {
             $("#square_one_text").html("O");
             grid[0][0] = 'O';
             input_value = 'O';
@@ -93,11 +94,13 @@ $("#square_one").click(function () {
                 winner = 2;
             }
             player = 1;
+            make_call = true ;
         }
 
         if (checkTie() == true) {
             winner = 0
         }
+        if (make_call == true){
         websocket.send(JSON.stringify({
             id: "#square_one_text",
             player: player,
@@ -108,13 +111,15 @@ $("#square_one").click(function () {
             game_id: game_id
         }));
     }
+    }
 });
 
 $("#square_two").click(function () {
-    if (checkLegalMove(0, 1) == true) {
-        
+    console.log("clicked");
+    if (checkLegalMove(0, 0) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
+        make_call = false;
         if (player == 1) {
             $("#square_two_text").html("X");
             grid[0][1] = 'X';
@@ -123,22 +128,23 @@ $("#square_two").click(function () {
                 winner = 1;
             }
             player = 2;
+            make_call = true ;
 
-        } else {
+        } else if(player==2)  {
             $("#square_two_text").html("O");
             grid[0][1] = 'O';
             input_value = 'O';
             if (checkWin(2) == true) {
                 winner = 2;
-                console.log('WON');
-                console.log(grid)
             }
             player = 1;
+            make_call = true ;
         }
 
         if (checkTie() == true) {
             winner = 0
         }
+        if (make_call == true){
         websocket.send(JSON.stringify({
             id: "#square_two_text",
             player: player,
@@ -149,13 +155,15 @@ $("#square_two").click(function () {
             game_id: game_id
         }));
     }
+    }
 });
 
 $("#square_three").click(function () {
-    if (checkLegalMove(0, 2) == true) {
-        
+    console.log("clicked");
+    if (checkLegalMove(0, 0) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
+        make_call = false;
         if (player == 1) {
             $("#square_three_text").html("X");
             grid[0][2] = 'X';
@@ -164,8 +172,9 @@ $("#square_three").click(function () {
                 winner = 1;
             }
             player = 2;
+            make_call = true ;
 
-        } else {
+        } else if(player==2)  {
             $("#square_three_text").html("O");
             grid[0][2] = 'O';
             input_value = 'O';
@@ -173,12 +182,13 @@ $("#square_three").click(function () {
                 winner = 2;
             }
             player = 1;
-
+            make_call = true ;
         }
 
         if (checkTie() == true) {
             winner = 0
         }
+        if (make_call == true){
         websocket.send(JSON.stringify({
             id: "#square_three_text",
             player: player,
@@ -189,13 +199,15 @@ $("#square_three").click(function () {
             game_id: game_id
         }));
     }
+    }
 });
 
 $("#square_four").click(function () {
-    if (checkLegalMove(1, 0) == true) {
-        
+    console.log("clicked");
+    if (checkLegalMove(0, 0) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
+        make_call = false;
         if (player == 1) {
             $("#square_four_text").html("X");
             grid[1][0] = 'X';
@@ -204,8 +216,9 @@ $("#square_four").click(function () {
                 winner = 1;
             }
             player = 2;
+            make_call = true ;
 
-        } else {
+        } else if(player==2)  {
             $("#square_four_text").html("O");
             grid[1][0] = 'O';
             input_value = 'O';
@@ -213,12 +226,13 @@ $("#square_four").click(function () {
                 winner = 2;
             }
             player = 1;
-
+            make_call = true ;
         }
 
         if (checkTie() == true) {
             winner = 0
         }
+        if (make_call == true){
         websocket.send(JSON.stringify({
             id: "#square_four_text",
             player: player,
@@ -229,13 +243,15 @@ $("#square_four").click(function () {
             game_id: game_id
         }));
     }
+    }
 });
 
 $("#square_five").click(function () {
-    if (checkLegalMove(1, 1) == true) {
-        
+    console.log("clicked");
+    if (checkLegalMove(0, 0) == true) {
         game_id = document.getElementById('game_id').value
-        winner = null;
+        winner = null
+        make_call = false;
         if (player == 1) {
             $("#square_five_text").html("X");
             grid[1][1] = 'X';
@@ -244,8 +260,9 @@ $("#square_five").click(function () {
                 winner = 1;
             }
             player = 2;
+            make_call = true ;
 
-        } else {
+        } else if(player==2)  {
             $("#square_five_text").html("O");
             grid[1][1] = 'O';
             input_value = 'O';
@@ -253,12 +270,13 @@ $("#square_five").click(function () {
                 winner = 2;
             }
             player = 1;
-
+            make_call = true ;
         }
 
         if (checkTie() == true) {
             winner = 0
         }
+        if (make_call == true){
         websocket.send(JSON.stringify({
             id: "#square_five_text",
             player: player,
@@ -269,13 +287,15 @@ $("#square_five").click(function () {
             game_id: game_id
         }));
     }
+    }
 });
 
 $("#square_six").click(function () {
-    if (checkLegalMove(1, 2) == true) {
-        
+    console.log("clicked");
+    if (checkLegalMove(0, 0) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
+        make_call = false;
         if (player == 1) {
             $("#square_six_text").html("X");
             grid[1][2] = 'X';
@@ -284,8 +304,9 @@ $("#square_six").click(function () {
                 winner = 1;
             }
             player = 2;
+            make_call = true ;
 
-        } else {
+        } else if(player==2)  {
             $("#square_six_text").html("O");
             grid[1][2] = 'O';
             input_value = 'O';
@@ -293,12 +314,13 @@ $("#square_six").click(function () {
                 winner = 2;
             }
             player = 1;
-
+            make_call = true ;
         }
 
         if (checkTie() == true) {
             winner = 0
         }
+        if (make_call == true){
         websocket.send(JSON.stringify({
             id: "#square_six_text",
             player: player,
@@ -309,24 +331,26 @@ $("#square_six").click(function () {
             game_id: game_id
         }));
     }
+    }
 });
 
 $("#square_seven").click(function () {
-    if (checkLegalMove(2, 0) == true) {
-        
+    console.log("clicked");
+    if (checkLegalMove(0, 0) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
+        make_call = false;
         if (player == 1) {
             $("#square_seven_text").html("X");
-
             grid[2][0] = 'X';
             input_value = 'X';
             if (checkWin(1) == true) {
                 winner = 1;
             }
             player = 2;
+            make_call = true ;
 
-        } else {
+        } else if(player==2)  {
             $("#square_seven_text").html("O");
             grid[2][0] = 'O';
             input_value = 'O';
@@ -334,12 +358,13 @@ $("#square_seven").click(function () {
                 winner = 2;
             }
             player = 1;
-
+            make_call = true ;
         }
 
         if (checkTie() == true) {
             winner = 0
         }
+        if (make_call == true){
         websocket.send(JSON.stringify({
             id: "#square_seven_text",
             player: player,
@@ -350,13 +375,15 @@ $("#square_seven").click(function () {
             game_id: game_id
         }));
     }
+    }
 });
 
 $("#square_eight").click(function () {
-    if (checkLegalMove(2, 1) == true) {
-        
+    console.log("clicked");
+    if (checkLegalMove(0, 0) == true) {
         game_id = document.getElementById('game_id').value
-        winner = null;
+        winner = null
+        make_call = false;
         if (player == 1) {
             $("#square_eight_text").html("X");
             grid[2][1] = 'X';
@@ -365,8 +392,9 @@ $("#square_eight").click(function () {
                 winner = 1;
             }
             player = 2;
+            make_call = true ;
 
-        } else {
+        } else if(player==2)  {
             $("#square_eight_text").html("O");
             grid[2][1] = 'O';
             input_value = 'O';
@@ -374,12 +402,13 @@ $("#square_eight").click(function () {
                 winner = 2;
             }
             player = 1;
-
+            make_call = true ;
         }
 
         if (checkTie() == true) {
             winner = 0
         }
+        if (make_call == true){
         websocket.send(JSON.stringify({
             id: "#square_eight_text",
             player: player,
@@ -390,13 +419,15 @@ $("#square_eight").click(function () {
             game_id: game_id
         }));
     }
+    }
 });
 
 $("#square_nine").click(function () {
-    if (checkLegalMove(2, 2) == true) {
-        
+    console.log("clicked");
+    if (checkLegalMove(0, 0) == true) {
         game_id = document.getElementById('game_id').value
-        winner = null;
+        winner = null
+        make_call = false;
         if (player == 1) {
             $("#square_nine_text").html("X");
             grid[2][2] = 'X';
@@ -405,8 +436,9 @@ $("#square_nine").click(function () {
                 winner = 1;
             }
             player = 2;
+            make_call = true ;
 
-        } else {
+        } else if(player==2)  {
             $("#square_nine_text").html("O");
             grid[2][2] = 'O';
             input_value = 'O';
@@ -414,13 +446,13 @@ $("#square_nine").click(function () {
                 winner = 2;
             }
             player = 1;
-
+            make_call = true ;
         }
 
         if (checkTie() == true) {
             winner = 0
         }
-
+        if (make_call == true){
         websocket.send(JSON.stringify({
             id: "#square_nine_text",
             player: player,
@@ -430,6 +462,7 @@ $("#square_nine").click(function () {
             type: 'play',
             game_id: game_id
         }));
+    }
     }
 });
 
