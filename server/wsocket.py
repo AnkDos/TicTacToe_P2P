@@ -29,17 +29,21 @@ class PlayGame:
     
     def terminate_game_ws(self,ws):
         """"""
+        del_val = None
         for key, value in self.game_info.items():
             if ws in value['ws']:
                 value['ws'].remove(ws)
                 ret_ =  value['ws'][-1]
-        del self.game_info[key]
+                del_val = key
+        if del_val:
+            del self.game_info[del_val]
         return ret_
         
 obj = PlayGame()
 
 def player(payload,payload_str,ws,terminate_ws=False):
     """"""
+    print(obj.game_info)
     if terminate_ws :
         ret_ = obj.terminate_game_ws(ws)
         return {
