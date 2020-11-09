@@ -55,6 +55,13 @@ websocket.onmessage = function (event) {
         document.getElementById("btn1").disabled = false;
         document.getElementById("game_ico").innerHTML = '';
         document.getElementById("turn").innerHTML = '';
+    }else if (event.data == "700") {
+        endgame(700);
+        document.getElementById("game_id").readOnly = false;
+        document.getElementById("btn2").disabled = false;
+        document.getElementById("btn1").disabled = false;
+        document.getElementById("game_ico").innerHTML = '';
+        document.getElementById("turn").innerHTML = '';
     }
     data = JSON.parse(event.data)
     console.log("SERVER-RES ", data)
@@ -513,6 +520,9 @@ function checkTie() {
             }
         }
     }
+    if (winner != null){
+        tieGame = false;
+    }
     console.log("Is a Tie : " , tieGame)
     return tieGame
 }
@@ -550,6 +560,10 @@ function endgame(num) {
     }
     if (num == 600) {
         $(".modal_text").html("Sorry the game is already full!");
+        $("#myModal").css("display", "block");
+    }
+    if (num == 700) {
+        $(".modal_text").html("Sorry this game id already been played");
         $("#myModal").css("display", "block");
     }
 

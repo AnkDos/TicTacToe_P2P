@@ -63,6 +63,10 @@ def player(payload,payload_str,ws,terminate_ws=False):
     turn = {}
     temp = dict()
     if payload['type'] == 'create':
+        if payload['game_id'] in obj.game_info:
+            return {
+                ws : "700"
+            }
         obj.create_game(payload['game_id'], ws)
         turn[ws] = 0
     
