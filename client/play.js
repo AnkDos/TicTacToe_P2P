@@ -71,7 +71,7 @@ websocket.onmessage = function (event) {
 };
 
 $("#square_one").click(function () {
-    console.log("clicked");
+    console.log("player", player);
     if (checkLegalMove(0, 0) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
@@ -96,7 +96,6 @@ $("#square_one").click(function () {
             player = 1;
             make_call = true ;
         }
-
         if (checkTie() == true) {
             winner = 0
         }
@@ -115,8 +114,8 @@ $("#square_one").click(function () {
 });
 
 $("#square_two").click(function () {
-    console.log("clicked");
-    if (checkLegalMove(0, 0) == true) {
+    console.log("player", player);
+    if (checkLegalMove(0, 1) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
         make_call = false;
@@ -160,7 +159,7 @@ $("#square_two").click(function () {
 
 $("#square_three").click(function () {
     console.log("clicked");
-    if (checkLegalMove(0, 0) == true) {
+    if (checkLegalMove(0, 2) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
         make_call = false;
@@ -204,7 +203,7 @@ $("#square_three").click(function () {
 
 $("#square_four").click(function () {
     console.log("clicked");
-    if (checkLegalMove(0, 0) == true) {
+    if (checkLegalMove(1, 0) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
         make_call = false;
@@ -248,7 +247,7 @@ $("#square_four").click(function () {
 
 $("#square_five").click(function () {
     console.log("clicked");
-    if (checkLegalMove(0, 0) == true) {
+    if (checkLegalMove(1, 1) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
         make_call = false;
@@ -292,7 +291,7 @@ $("#square_five").click(function () {
 
 $("#square_six").click(function () {
     console.log("clicked");
-    if (checkLegalMove(0, 0) == true) {
+    if (checkLegalMove(1, 2) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
         make_call = false;
@@ -336,7 +335,7 @@ $("#square_six").click(function () {
 
 $("#square_seven").click(function () {
     console.log("clicked");
-    if (checkLegalMove(0, 0) == true) {
+    if (checkLegalMove(2, 0) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
         make_call = false;
@@ -380,7 +379,7 @@ $("#square_seven").click(function () {
 
 $("#square_eight").click(function () {
     console.log("clicked");
-    if (checkLegalMove(0, 0) == true) {
+    if (checkLegalMove(2, 1) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
         make_call = false;
@@ -424,7 +423,7 @@ $("#square_eight").click(function () {
 
 $("#square_nine").click(function () {
     console.log("clicked");
-    if (checkLegalMove(0, 0) == true) {
+    if (checkLegalMove(2, 2) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
         make_call = false;
@@ -507,7 +506,8 @@ function checkTie() {
 }
 
 function checkLegalMove(row, column) {
-    console.log(grid[row][column]);
+    return true;
+    console.log('legalMove',grid[row][column]);
     if (grid[row][column] !== undefined && grid[row][column] !== null) {
         return false;
     } else {
