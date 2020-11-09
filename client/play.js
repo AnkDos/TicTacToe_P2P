@@ -16,6 +16,7 @@ document.getElementById('btn1').onclick = function (event) {
     document.getElementById("game_id").readOnly = true;
     document.getElementById("btn1").disabled = true;
     document.getElementById("btn2").disabled = true;
+    document.getElementById("game_ico").innerHTML = 'YOUR SYMBOL : X';
 }
 
 document.getElementById('btn2').onclick = function (event) {
@@ -26,6 +27,7 @@ document.getElementById('btn2').onclick = function (event) {
     document.getElementById("game_id").readOnly = true;
     document.getElementById("btn2").disabled = true;
     document.getElementById("btn1").disabled = true;
+    document.getElementById("game_ico").innerHTML = 'YOUR SYMBOL : O';
 }
 
 
@@ -37,16 +39,23 @@ websocket.onmessage = function (event) {
         document.getElementById("game_id").readOnly = false;
         document.getElementById("btn2").disabled = false;
         document.getElementById("btn1").disabled = false;
+        document.getElementById("game_ico").innerHTML = '';
+        document.getElementById("turn").innerHTML = '';
+        
     }else if (event.data == "500"){
         endgame(500);
         document.getElementById("game_id").readOnly = false;
         document.getElementById("btn2").disabled = false;
-        document.getElementById("btn1").disabled = false;   
+        document.getElementById("btn1").disabled = false;
+        document.getElementById("game_ico").innerHTML = '';
+        document.getElementById("turn").innerHTML = '';   
     }else if (event.data == "600"){
         endgame(600);
         document.getElementById("game_id").readOnly = false;
         document.getElementById("btn2").disabled = false;
-        document.getElementById("btn1").disabled = false;   
+        document.getElementById("btn1").disabled = false;
+        document.getElementById("game_ico").innerHTML = '';
+        document.getElementById("turn").innerHTML = '';   
     }
     data = JSON.parse(event.data)
     $(data.id).html(data.value)
