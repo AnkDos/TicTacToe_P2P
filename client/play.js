@@ -37,6 +37,12 @@ websocket.onmessage = function (event) {
         document.getElementById("game_id").readOnly = false;
         document.getElementById("btn2").disabled = false;
         document.getElementById("btn1").disabled = false;
+    }else if (event.data == "500"){
+        endgame(500);
+        document.getElementById("game_id").readOnly = false;
+        document.getElementById("btn2").disabled = false;
+        document.getElementById("btn1").disabled = false;
+        
     }
     data = JSON.parse(event.data)
     $(data.id).html(data.value)
@@ -480,6 +486,11 @@ function endgame(num) {
         $(".modal_text").html("Sorry Game Not Available!");
         $("#myModal").css("display", "block");
     }
+    if (num == 500) {
+        $(".modal_text").html("Other Player Quit the game!");
+        $("#myModal").css("display", "block");
+    }
+    
 }
 // function locaAll(){
 //     document.querySelector("td").style.pointerEvents = "none";
