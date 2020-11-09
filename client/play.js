@@ -41,8 +41,12 @@ websocket.onmessage = function (event) {
         endgame(500);
         document.getElementById("game_id").readOnly = false;
         document.getElementById("btn2").disabled = false;
-        document.getElementById("btn1").disabled = false;
-        
+        document.getElementById("btn1").disabled = false;   
+    }else if (event.data == "600"){
+        endgame(600);
+        document.getElementById("game_id").readOnly = false;
+        document.getElementById("btn2").disabled = false;
+        document.getElementById("btn1").disabled = false;   
     }
     data = JSON.parse(event.data)
     $(data.id).html(data.value)
@@ -488,6 +492,10 @@ function endgame(num) {
     }
     if (num == 500) {
         $(".modal_text").html("Other Player Quit the game!");
+        $("#myModal").css("display", "block");
+    }
+    if (num == 600){
+        $(".modal_text").html("Sorry the game is already full!");
         $("#myModal").css("display", "block");
     }
     
