@@ -1,6 +1,8 @@
 import asyncio
 import json
 import websockets
+import os
+import copy
 
 from collections import defaultdict
 
@@ -13,15 +15,22 @@ class PlayGame:
         self.game_info[game_id]['ws'].append(ws)
         self.game_info[game_id]['game_status'] = 'open'
         self.game_info[game_id]['payload'] = payload
+        self.game_info[game_id]['payload']['game_status'] = 'open'
         
-    def join_game(self, game_id, ws):
+    def join_game(self, game_id, ws,payload):
         """"""
         self.game_info[game_id]['ws'].append(ws)
         self.game_info[game_id]['game_status'] = 'goingon'
+        self.game_info[game_id]['payload'] = payload
     
     def play(self, game_id,payload,ws):
         """"""
         self.game_info[game_id]['payload'] = payload
+        
+    def other_socket(self,game_id, ws):
+        """"""
+        return [wsk for wsk in self.game_info[game_id]['ws'] \
+            if wsk != ws ][-1]
         
     def terminate_game(self, game_id):
         """"""
@@ -30,6 +39,7 @@ class PlayGame:
     def terminate_game_ws(self,ws):
         """"""
         del_val = None
+        ret_ = None
         for key, value in self.game_info.items():
             if ws in value['ws']:
                 value['ws'].remove(ws)
@@ -43,7 +53,6 @@ obj = PlayGame()
 
 def player(payload,payload_str,ws,terminate_ws=False):
     """"""
-    print(obj.game_info)
     if terminate_ws :
         ret_ = obj.terminate_game_ws(ws)
         return {
@@ -51,8 +60,11 @@ def player(payload,payload_str,ws,terminate_ws=False):
         }
         
     ret_ = {}
+    turn = {}
+    temp = dict()
     if payload['type'] == 'create':
         obj.create_game(payload['game_id'], ws)
+        turn[ws] = 0
     
     if payload['type'] == 'join':
         if payload['game_id'] not in obj.game_info:
@@ -62,26 +74,40 @@ def player(payload,payload_str,ws,terminate_ws=False):
         if obj.game_info[payload['game_id']]['game_status'] == 'goingon':
             return {
                 ws : "600"
-            }          
-        obj.join_game(payload['game_id'], ws)
+            }      
+        obj.join_game(payload['game_id'], ws,payload_str)
+        turn[ws] = 0
+        turn[obj.other_socket(payload['game_id'],ws)] = 1
     
     if payload['type'] ==  'play':
         obj.play(payload['game_id'],payload_str,ws)
+        turn[ws] = 0
+        turn[obj.other_socket(payload['game_id'],ws)] = 1
     
     for values in obj.game_info[payload['game_id']]['ws'] :
         ret_[values] = obj.game_info[payload['game_id']]['payload']
-    
+        if not turn[values]:
+            temp = copy.deepcopy(obj.game_info[payload['game_id']]['payload'])
+            if isinstance(temp,dict):
+                temp['player'] = None
+            else :
+                temp = json.loads(temp)
+                temp['player'] = None
+            ret_[values] = json.dumps(temp)
+            
     return ret_
 
 async def play_online(websocket, path):
+    """serving hot"""
     try :
         while True:
             payload_str = await websocket.recv()
+            print(payload_str)
             payload = json.loads(payload_str)
             data = player(payload,payload_str,websocket)        
             for key, value  in data.items():
                 await key.send(value)
-                await asyncio.sleep(0.00003)
+                await asyncio.sleep(0.003)
     except :
         data = player(payload=None,
                       payload_str=None,
