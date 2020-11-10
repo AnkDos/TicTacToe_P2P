@@ -68,7 +68,16 @@ def player(payload,payload_str,ws,terminate_ws=False):
                 ws : "700"
             }
         if payload['event'] == 'recreate' :
+            ows = obj.other_socket(payload['game_id'],ws)
             obj.terminate_game(payload['game_id'])
+            obj.create_game(payload['game_id'], ws)
+            turn[ws] = 0
+            temp = obj.game_info[payload['game_id']]['payload']
+            temp['player'] = None
+            return {
+                ows: "900",
+                ws: json.dumps(temp)
+            }
             
         obj.create_game(payload['game_id'], ws)
         turn[ws] = 0
@@ -112,7 +121,7 @@ def player(payload,payload_str,ws,terminate_ws=False):
                 temp = json.loads(temp)
                 temp['player'] = None
             ret_[values] = json.dumps(temp)
-    print(obj.game_info)
+    
     return ret_
 
 async def play_online(websocket, path):
@@ -120,7 +129,6 @@ async def play_online(websocket, path):
     try :
         while True:
             payload_str = await websocket.recv()
-            print(payload_str)
             payload = json.loads(payload_str)
             data = player(payload,payload_str,websocket)        
             for key, value  in data.items():

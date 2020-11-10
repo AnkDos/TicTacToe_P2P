@@ -71,6 +71,15 @@ websocket.onmessage = function (event) {
         document.getElementById("btn1").disabled = false;
         document.getElementById("game_ico").innerHTML = '';
         document.getElementById("turn").innerHTML = '';
+        return
+    }else if (event.data == "900") {
+        endgame(900);
+        document.getElementById("game_id").readOnly = false;
+        document.getElementById("btn2").disabled = false;
+        document.getElementById("btn1").disabled = false;
+        document.getElementById("game_ico").innerHTML = '';
+        document.getElementById("turn").innerHTML = '';
+        return
     }
 
     data = JSON.parse(event.data)
@@ -592,6 +601,12 @@ function endgame(num) {
         $("#restartBtn2").hide()
         $("#restartBtn1").show()
     }
+    if (num == 900) {
+        $(".modal_text").html("Opposition Joined ,click on play again to join");
+        $("#myModal").css("display", "block");
+        $("#restartBtn2").hide()
+        $("#restartBtn1").show()
+    }
     
 
 }
@@ -629,8 +644,9 @@ $("#restartBtn1").click(function () {
     $("#square_eight_text").html("");
     $("#square_nine_text").html("");
     modal.style.display = "none";
+    console.log("restart_player ",player);
     game_id = document.getElementById('game_id').value
-    if (player==2 || player==1){
+    if (player!= 1 && player!=2){
         recreate_game()
         document.getElementById("game_ico").innerHTML = 'YOUR SYMBOL : X';
     }else{
