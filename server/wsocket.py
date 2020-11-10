@@ -58,26 +58,39 @@ def player(payload,payload_str,ws,terminate_ws=False):
         return {
             ret_ : "500"
         }
-        
     ret_ = {}
     turn = {}
     temp = dict()
     if payload['type'] == 'create':
-        if payload['game_id'] in obj.game_info:
+        if payload['game_id'] in obj.game_info and \
+            payload['event'] != 'recreate':
             return {
                 ws : "700"
             }
+        if payload['event'] == 'recreate' :
+            obj.terminate_game(payload['game_id'])
+            
         obj.create_game(payload['game_id'], ws)
         turn[ws] = 0
     
     if payload['type'] == 'join':
         if payload['game_id'] not in obj.game_info:
+            if payload['event'] == 'rejoin':
+                return {
+                    ws: "800"
+                }
             return {
                 ws : "400"
             }
-        if obj.game_info[payload['game_id']]['game_status'] == 'goingon':
+        if obj.game_info[payload['game_id']]['game_status'] == 'goingon' and\
+            payload['event'] != 'rejoin':
             return {
                 ws : "600"
+            }
+        if obj.game_info[payload['game_id']]['game_status'] == 'goingon' and\
+            payload['event'] == 'rejoin':
+            return {
+                ws : "800"
             }      
         obj.join_game(payload['game_id'], ws,payload_str)
         turn[ws] = 0
@@ -87,6 +100,7 @@ def player(payload,payload_str,ws,terminate_ws=False):
         obj.play(payload['game_id'],payload_str,ws)
         turn[ws] = 0
         turn[obj.other_socket(payload['game_id'],ws)] = 1
+        
     
     for values in obj.game_info[payload['game_id']]['ws'] :
         ret_[values] = obj.game_info[payload['game_id']]['payload']
@@ -98,7 +112,7 @@ def player(payload,payload_str,ws,terminate_ws=False):
                 temp = json.loads(temp)
                 temp['player'] = None
             ret_[values] = json.dumps(temp)
-            
+    print(obj.game_info)
     return ret_
 
 async def play_online(websocket, path):

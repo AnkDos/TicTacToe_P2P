@@ -3,7 +3,6 @@ var grid = new Array(3);
 grid[0] = new Array(3);
 grid[1] = new Array(3);
 grid[2] = new Array(3);
-console.log("init_grid ", grid)
 var player = undefined;
 var gameWon = 0;
 var websocket = new WebSocket("ws://0.0.0.0:1234/");
@@ -11,7 +10,8 @@ var websocket = new WebSocket("ws://0.0.0.0:1234/");
 document.getElementById('btn1').onclick = function (event) {
     websocket.send(JSON.stringify({
         type: 'create',
-        game_id: document.getElementById('game_id').value
+        game_id: document.getElementById('game_id').value,
+        event:'create'
     }));
     document.getElementById("game_id").readOnly = true;
     document.getElementById("btn1").disabled = true;
@@ -23,7 +23,8 @@ document.getElementById('btn2').onclick = function (event) {
     websocket.send(JSON.stringify({
         type: 'join',
         game_id: document.getElementById('game_id').value,
-        player: 1
+        player: 1,
+        event: 'join'
     }));
     document.getElementById("game_id").readOnly = true;
     document.getElementById("btn2").disabled = true;
@@ -33,6 +34,7 @@ document.getElementById('btn2').onclick = function (event) {
 
 
 websocket.onmessage = function (event) {
+    console.log("server response: ",event.data);
     if (event.data == "400") {
         endgame(400);
         document.getElementById("game_id").readOnly = false;
@@ -62,9 +64,16 @@ websocket.onmessage = function (event) {
         document.getElementById("btn1").disabled = false;
         document.getElementById("game_ico").innerHTML = '';
         document.getElementById("turn").innerHTML = '';
+    }else if (event.data == "800") {
+        endgame(800);
+        document.getElementById("game_id").readOnly = false;
+        document.getElementById("btn2").disabled = false;
+        document.getElementById("btn1").disabled = false;
+        document.getElementById("game_ico").innerHTML = '';
+        document.getElementById("turn").innerHTML = '';
     }
+
     data = JSON.parse(event.data)
-    console.log("SERVER-RES ", data)
     $(data.id).html(data.value)
     player = data.player
     if ("game_status" in data) {
@@ -80,16 +89,13 @@ websocket.onmessage = function (event) {
         grid = data.grid;
     }
     
-    console.log("soc_grid ", grid)
     if (data.winner != null) {
-        console.log("winner", data.winner)
         endgame(data.winner)
     }
-    console.log("websocket_ret : ", data.id)
+    console.log("current_player: ", player);
 };
 
 $("#square_one").click(function () {
-    console.log("player", player);
     if (checkLegalMove(0, 0) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
@@ -132,7 +138,6 @@ $("#square_one").click(function () {
 });
 
 $("#square_two").click(function () {
-    console.log("player", player);
     if (checkLegalMove(0, 1) == true) {
         game_id = document.getElementById('game_id').value
         winner = null
@@ -529,7 +534,6 @@ function checkTie() {
 
 function checkLegalMove(row, column) {
     // return true;
-    console.log('legalMove', grid[row][column]);
     if (grid[row][column] !== undefined && grid[row][column] !== null) {
         return false;
     } else {
@@ -537,51 +541,83 @@ function checkLegalMove(row, column) {
     }
 }
 
+code = 0
 function endgame(num) {
+    code = num
     if (num == 0) {
         $(".modal_text").html("Tie game!");
         $("#myModal").css("display", "block");
+        $("#restartBtn2").hide()
+        $("#restartBtn1").show()
     }
     if (num == 1) {
         $(".modal_text").html("X Wins!");
         $("#myModal").css("display", "block");
+        $("#restartBtn2").hide()
+        $("#restartBtn1").show()
     }
     if (num == 2) {
         $(".modal_text").html("O Wins!");
         $("#myModal").css("display", "block");
+        $("#restartBtn2").hide()
+        $("#restartBtn1").show()
     }
     if (num == 400) {
         $(".modal_text").html("Sorry Game Not Available!");
         $("#myModal").css("display", "block");
+        $("#restartBtn1").hide()
+        $("#restartBtn2").show()
     }
     if (num == 500) {
         $(".modal_text").html("Other Player Quit the game!");
         $("#myModal").css("display", "block");
+        $("#restartBtn1").hide()
+        $("#restartBtn2").show()
     }
     if (num == 600) {
         $(".modal_text").html("Sorry the game is already full!");
         $("#myModal").css("display", "block");
+        $("#restartBtn1").hide()
+        $("#restartBtn2").show()
     }
     if (num == 700) {
         $(".modal_text").html("Sorry this game id already been played");
         $("#myModal").css("display", "block");
+        $("#restartBtn1").hide()
+        $("#restartBtn2").show()
     }
+    if (num == 800) {
+        $(".modal_text").html("Wait for opposition to accept");
+        $("#myModal").css("display", "block");
+        $("#restartBtn2").hide()
+        $("#restartBtn1").show()
+    }
+    
 
 }
-// function locaAll(){
-//     document.querySelector("td").style.pointerEvents = "none";
-// }
 
-// function unlockAll(){
-//     document.getElementsByTagName("td").disabled = false;
-// }
+function recreate_game(){
+    websocket.send(JSON.stringify({
+        type: 'create',
+        game_id: document.getElementById('game_id').value,
+        event: 'recreate'
+    }));
+}
 
-$("#restartBtn").click(function () {
+function rejoin_game(){
+    websocket.send(JSON.stringify({
+        type: 'join',
+        game_id: document.getElementById('game_id').value,
+        player: 1,
+        event:'rejoin'
+    }));
+}
+
+$("#restartBtn1").click(function () {
     grid = new Array(3);
     grid[0] = new Array(3);
     grid[1] = new Array(3);
     grid[2] = new Array(3);
-    // player = 1;
     gameWon = 0;
     $("#square_one_text").html("");
     $("#square_two_text").html("");
@@ -594,5 +630,30 @@ $("#restartBtn").click(function () {
     $("#square_nine_text").html("");
     modal.style.display = "none";
     game_id = document.getElementById('game_id').value
+    if (player==2 || player==1){
+        recreate_game()
+        document.getElementById("game_ico").innerHTML = 'YOUR SYMBOL : X';
+    }else{
+        rejoin_game()
+        document.getElementById("game_ico").innerHTML = 'YOUR SYMBOL : O';
+    }
 });
 
+$("#restartBtn2").click(function () {
+    grid = new Array(3);
+    grid[0] = new Array(3);
+    grid[1] = new Array(3);
+    grid[2] = new Array(3);
+    gameWon = 0;
+    player = undefined
+    $("#square_one_text").html("");
+    $("#square_two_text").html("");
+    $("#square_three_text").html("");
+    $("#square_four_text").html("");
+    $("#square_five_text").html("");
+    $("#square_six_text").html("");
+    $("#square_seven_text").html("");
+    $("#square_eight_text").html("");
+    $("#square_nine_text").html("");
+    modal.style.display = "none";
+});
